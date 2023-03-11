@@ -13,33 +13,21 @@ export default function App() {
   const [errorMessage, setErrorMessage] = useState(null);
 
   const likeAction = async () => {
-    try {
-      setIsPending(true);
-      setErrorMessage(null);
+    setIsPending(true);
+    setErrorMessage(null);
 
-      const response = await fetch(
-        'https://www.greatfrontend.com/api/questions/like-button',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            action: liked ? 'unlike' : 'like',
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        const res = await response.json();
-        setErrorMessage(res.error);
-        return;
-      }
-
-      setLiked((liked) => !liked);
-    } finally {
-      setIsPending(false);
-    }
+    fetch('https://www.greatfrontend.com/api/questions/like-button', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        action: liked ? 'unlike' : 'like',
+      }),
+    })
+      .then(() => setLiked((liked) => !liked))
+      .catch((err) => setErrorMessage(err))
+      .finally(() => setIsPending(false));
   };
 
   return (
